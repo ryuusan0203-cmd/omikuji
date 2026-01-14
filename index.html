@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>宮崎地鶏お年玉おみくじ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+  font-family: sans-serif;
+  text-align: center;
+  background: linear-gradient(135deg, #ffb347, #ff5e62);
+  margin: 0;
+  padding: 50px;
+  color: #fff;
+}
+h1 {
+  font-size: 2.2em;
+  text-shadow: 2px 2px #660000;
+}
+#container {
+  position: relative;
+  width: 280px;
+  height: 400px;
+  margin: 0 auto;
+}
+#box {
+  width: 120px;
+  height: 200px;
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+  border-radius: 10px;
+  background: #8b5a2b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  writing-mode: vertical-rl;
+  font-weight: bold;
+  font-size: 1.5em;
+}
+#stick {
+  width: 30px;
+  height: 150px;
+  background: #fff8dc;
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
+  color: #660000;
+}
+</style>
+</head>
+<body>
+
+<h1>宮崎地鶏お年玉おみくじ</h1>
+<div id="container">
+  <div id="stick"></div>
+  <div id="box">おみくじ</div>
+</div>
+<p id="msg">箱をタップして引いてね</p>
+
+<script>
+const ranks = [
+  { name: '小吉', p: 60 },
+  { name: '中吉', p: 25 },
+  { name: '大吉', p: 14 },
+  { name: '大大吉', p: 1 }
+];
+
+const box = document.getElementById('box');
+const stick = document.getElementById('stick');
+const msg = document.getElementById('msg');
+
+if (localStorage.getItem('omikuji_done')) {
+  stick.style.display = 'flex';
+  stick.innerText = localStorage.getItem('omikuji_result');
+  msg.innerText = 'この端末では1回までです';
+  box.style.pointerEvents = 'none';
+}
+
+function draw() {
+  let r = Math.random() * 100;
+  let s = 0;
+  for (let i of ranks) {
+    s += i.p;
+    if (r < s) return i.name;
+  }
+  return '小吉';
+}
+
+box.onclick = () => {
+  if (localStorage.getItem('omikuji_done')) return;
+  const result = draw();
+  stick.style.display = 'flex';
+  stick.innerText = result;
+  localStorage.setItem('omikuji_done', 'true');
+  localStorage.setItem('omikuji_result', result);
+  msg.innerText = '結果が出ました！';
+};
+</script>
+
+</body>
+</html>
